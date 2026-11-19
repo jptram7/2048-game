@@ -1,0 +1,298 @@
+/* ==========================================================
+   css/style.css : HOW THE GAME LOOKS AND MOVES
+   ==========================================================
+   Layout, the board, the tiles, the animations and the palette dots.
+   Colors are NOT here: they come from the variables in palettes.css.
+
+   Sections, top to bottom:
+     1. Basic settings and page layout
+     2. Top bar (title, scores, button)
+     3. Board and the win / game-over message
+     4. Tiles, a color rule per number, animations
+     5. Palette switcher dots
+*/
+
+:root {
+  --gap:    10px;   /* space between cells */
+  --radius: 12px;   /* how rounded the corners are */
+}
+
+/* "*" means: apply to everything. box-sizing makes widths
+   include padding, which keeps sizes predictable. */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;               /* at least the full screen height */
+  background: var(--page-bg);
+  color: var(--text-dark);
+  font-family: "Segoe UI", system-ui, Arial, sans-serif;
+  transition: background-color 0.3s, color 0.3s;   /* palette changes fade instead of snapping */
+  display: flex;                   /* flex = easy centering */
+  justify-content: center;
+  align-items: center;
+}
+
+/* The whole game block. min() picks the smaller value:
+   on a phone it uses 92% of screen width, on a laptop max 440px. */
+.game {
+  width: min(92vw, 440px);
+}
+
+/* ---- Top bar: title, scores, button ---- */
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 3rem;
+  letter-spacing: -1px;
+}
+
+.scores {
+  display: flex;
+  gap: 8px;
+}
+
+.score-box {
+  position: relative;          /* Chapter 10: lets the "+4" float inside the box */
+  background: var(--board-bg);
+  color: var(--on-board, var(--text-dark));   /* light text on a dark board if the palette says so */
+  border-radius: 8px;
+  padding: 6px 14px;
+  text-align: center;
+  min-width: 70px;
+}
+
+.score-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.7;
+}
+
+.score-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.hint { margin: 0; font-size: 0.9rem; opacity: 0.75; }
+
+button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s, filter 0.2s;  /* smooth hover effect */
+}
+button:hover  { filter: brightness(1.1); }
+button:active { transform: scale(0.95); }
+
+/* ---- Win / game-over message laid over the board (Chapter 9) ---- */
+.board-wrap { position: relative; }   /* lets the overlay sit on top of the board */
+
+.overlay {
+  position: absolute;
+  inset: 0;                           /* stretch to cover the whole board */
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--page-bg) 88%, transparent);
+  display: none;                      /* hidden by default */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  z-index: 5;
+}
+.overlay.show { display: flex; }      /* JavaScript adds the class "show" to reveal it */
+.overlay h2   { margin: 0; font-size: 2.4rem; }
+
+/* ---- The board: a 4x4 grid of EMPTY cells (the background) ---- */
+.board {
+  background: var(--board-bg);
+  border-radius: var(--radius);
+  padding: var(--gap);
+  display: grid;
+  /* minmax(0, 1fr) = "exactly 1 equal share, never grow because of content". */
+  grid-template-columns: repeat(4, minmax(0, 1fr));  /* 4 equal columns */
+  grid-template-rows:    repeat(4, minmax(0, 1fr));  /* 4 equal rows */
+  gap: var(--gap);
+  aspect-ratio: 1 / 1;                    /* always a perfect square */
+  touch-action: none;   /* swiping on the board must not scroll the page on a phone */
+  user-select: none;    /* no accidental text selection while dragging */
+}
+
+.cell {
+  background: var(--cell-bg);
+  border-radius: calc(var(--radius) - 4px);
+}
+
+/* ==========================================================
+   CHAPTER 10: TILES, COLORS AND ANIMATION
+   ==========================================================
+   Big change: tiles are no longer INSIDE the cells. They live in a
+   separate transparent "tile layer" on top of the board, and each tile
+   is placed with a row number (--r) and column number (--c).
+   When JavaScript changes --r or --c, the CSS "transition" makes the
+   tile SLIDE to the new place instead of jumping. That is the whole trick.
+*/
+
+.tile-layer {
+  position: absolute;
+  inset: var(--gap);                 /* same area as the cells */
+  pointer-events: none;              /* clicks and swipes pass through to the board */
+}
+
+/* The outer box of a tile: it only handles POSITION and SLIDING. */
+.tile {
+  --size: calc((100% - 3 * var(--gap)) / 4);    /* one tile = a quarter of the width minus gaps */
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--size);
+  height: var(--size);
+  /* move right by (column x tile-size+gap) and down by (row x tile-size+gap) */
+  transform: translate(calc(var(--c) * (100% + var(--gap))),
+                       calc(var(--r) * (100% + var(--gap))));
+  transition: transform var(--slide-ms, 110ms) ease-in-out;   /* the slide */
+  container-type: size;              /* lets the number scale with the tile (cqw units below) */
+}
+
+/* The inner box: the visible colored square with the number. */
+.tile-face {
+  width: 100%;
+  height: 100%;
+  border-radius: calc(var(--radius) - 4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 800;
+  line-height: 1;
+  font-size: 28cqw;                  /* ONE size for every number (cqw = % of the tile's width) */
+  color: var(--on-high);
+  /* A very light gradient: a slightly lighter top-left corner gives a soft, calm depth.
+     color-mix blends the tile color with white. 85% = how much of the tile color to keep. */
+  background: linear-gradient(135deg,
+                color-mix(in srgb, var(--tile, #bbb) 85%, white),
+                var(--tile, #bbb));
+}
+
+/* One rule per value: it only says WHICH palette color to use.
+   The colors themselves are in the PALETTES section at the top.
+   Only the 2048 tile and tiles above it glow, so the goal stands out. */
+.v-2    { --tile: var(--v2);    color: var(--t2, var(--on-low)); }
+.v-4    { --tile: var(--v4);    color: var(--t4, var(--on-low)); }
+.v-8    { --tile: var(--v8); color: var(--t8, var(--on-high)); }
+.v-16   { --tile: var(--v16); color: var(--t16, var(--on-high)); }
+.v-32   { --tile: var(--v32); color: var(--t32, var(--on-high)); }
+.v-64   { --tile: var(--v64); color: var(--t64, var(--on-high)); }
+.v-128  { --tile: var(--v128); color: var(--t128, var(--on-high)); }
+.v-256  { --tile: var(--v256); color: var(--t256, var(--on-high)); }
+.v-512  { --tile: var(--v512); color: var(--t512, var(--on-high)); }
+.v-1024 { --tile: var(--v1024); color: var(--t1024, var(--on-high)); }
+.v-2048 { --tile: var(--v2048); color: var(--t2048, var(--on-high)); box-shadow: 0 0 14px 2px color-mix(in srgb, var(--v2048) 55%, transparent); }
+.v-big  { --tile: var(--vbig); color: var(--vbig-text); box-shadow: 0 0 12px 2px color-mix(in srgb, var(--vbig-text) 40%, transparent); }
+
+/* CANDY only: a soft shine on the top half of each tile, on top of the usual
+   color gradient. "Layers" are separated by commas; the first one is drawn on top.
+   Delete this whole rule for flat colors. */
+[data-palette="candy"] .tile-face {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.30), rgba(255, 255, 255, 0) 50%),
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--tile, #bbb) 85%, white),
+      var(--tile, #bbb));
+}
+
+/* ---- Animations. A @keyframes block describes a short movie; ----
+   ---- an "animation" line says which movie to play and how fast. ---- */
+
+/* New random tile: grows from nothing. */
+@keyframes appear {
+  from { transform: scale(0);  opacity: 0; }
+  to   { transform: scale(1);  opacity: 1; }
+}
+/* Merged tile: starts small, overshoots (bigger than normal), settles. A little "pop". */
+@keyframes pop {
+  0%   { transform: scale(0.4);  opacity: 0; }
+  55%  { transform: scale(1.18); opacity: 1; }
+  100% { transform: scale(1); }
+}
+/* The 2048 tile breathes: its glow grows and shrinks forever. */
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 14px 2px color-mix(in srgb, var(--v2048) 50%, transparent); }
+  50%      { box-shadow: 0 0 28px 8px color-mix(in srgb, var(--v2048) 85%, transparent); }
+}
+/* The floating "+4" above the score. */
+@keyframes floatUp {
+  from { opacity: 1; transform: translate(-50%, 0); }
+  to   { opacity: 0; transform: translate(-50%, -34px); }
+}
+
+/* --delay is set by JavaScript: after a move, new and merged tiles wait for
+   the sliding to finish (backwards = stay in the first frame while waiting). */
+.tile-face.appear { animation: appear 0.2s ease-out var(--delay, 0ms) backwards; }
+.tile-face.pop    { animation: pop 0.28s ease-out var(--delay, 0ms) backwards; }
+.tile-face.v-2048 { animation: glow 1.6s ease-in-out infinite; }
+.tile-face.pop.v-2048 {
+  animation: pop 0.28s ease-out var(--delay, 0ms) backwards,
+             glow 1.6s ease-in-out infinite;
+}
+
+.score-add {
+  position: absolute;
+  left: 50%;
+  top: 18px;
+  font-weight: 800;
+  color: var(--accent);
+  pointer-events: none;
+  animation: floatUp 0.8s ease-out forwards;
+}
+
+/* ---- Palette switcher: one round dot per palette ---- */
+.theme-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;            /* many dots: wrap to a second line on small screens */
+  gap: 10px 12px;
+  margin-top: 18px;
+}
+.theme-label { font-size: 0.8rem; opacity: 0.7; }
+.theme-swatches { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+/* Each dot carries its own data-palette, so it can show ITS palette's colors. */
+.swatch {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 50%;
+  border: 3px solid var(--board-bg);
+  background: linear-gradient(135deg, var(--v4) 0 34%, var(--v32) 34% 67%, var(--v512) 67%);
+}
+.swatch.active {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  transform: scale(1.12);
+}
+
+/* Respect people who turn off animations in their device settings. */
+@media (prefers-reduced-motion: reduce) {
+  .tile { transition: none; }
+  .tile-face, .tile-face.pop, .tile-face.appear,
+  .tile-face.v-2048, .tile-face.pop.v-2048 { animation: none; }
+  .score-add { display: none; }
+}

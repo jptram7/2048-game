@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<!--
+  2048: index.html (the skeleton)
+  ------------------------------------------------------------
+  This file only holds the STRUCTURE. The look and the behavior live in other files:
+    css/palettes.css  the colors
+    css/style.css     the layout, tiles, animations
+    js/*.js           the game, one job per file (see README.md)
+  Analogy with Excel: HTML = the cells and labels, CSS = the formatting, JS = the formulas.
+-->
+<html lang="en" data-palette="autumn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>2048</title>
+
+  <!-- Install-on-phone details (manifest = name/icon/colors; apple lines = iPhone). -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="2048">
+  <meta name="theme-color" content="#f6efe6">
+
+  <link rel="stylesheet" href="css/palettes.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <!-- ----------------------------------------------------------
+       HTML (the skeleton)
+       Each <div> is a box. "class" is a label so CSS can find it.
+       ---------------------------------------------------------- -->
+  <div class="game">
+
+    <div class="top">
+      <h1>2048</h1>
+      <div class="scores">
+        <div class="score-box">
+          <div class="score-label">Score</div>
+          <div class="score-value" id="score">0</div>
+        </div>
+        <div class="score-box">
+          <div class="score-label">Best</div>
+          <div class="score-value" id="best">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <p class="hint">Join the tiles to reach <strong>2048</strong>.</p>
+      <button id="restart">New Game</button>
+    </div>
+
+    <!-- The board sits inside a wrapper so layers can be stacked on it:
+         1. the board (16 empty cells, built by JavaScript)
+         2. the tile layer (the colored sliding tiles)
+         3. the overlay (win / game-over message) -->
+    <div class="board-wrap">
+      <div class="board" id="board"></div>
+      <div class="tile-layer" id="tile-layer"></div>
+      <div class="overlay" id="overlay">
+        <h2 id="overlay-title"></h2>
+        <button id="overlay-btn"></button>
+      </div>
+    </div>
+
+    <!-- Palette switcher: the dots are created by JavaScript from the PALETTES list. -->
+    <div class="theme-row">
+      <span class="theme-label">Palette</span>
+      <div class="theme-swatches" id="swatches"></div>
+    </div>
+
+  </div>
+
+  <!-- The scripts load in THIS order: each file may use what the files above it define. -->
+  <script src="js/config.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/board.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/view.js"></script>
+  <script src="js/effects.js"></script>
+  <script src="js/palettes.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

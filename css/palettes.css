@@ -1,0 +1,142 @@
+/* ==========================================================
+   css/palettes.css : ALL THE COLORS OF THE GAME
+   ==========================================================
+   This is the file to open when you want to change colors.
+   (Layout, tiles and animations are in style.css.)
+
+   Each palette is one block of named colors. The switcher under the board
+   sets  <html data-palette="autumn">  and CSS picks the matching block.
+
+   TO CHANGE A COLOR: edit a hex code (like #e39a52) in a block, save, refresh.
+   TO MAKE YOUR OWN: edit the block called "off-pink" (at the bottom), or copy any block.
+   TO ADD A 7TH PALETTE: copy a block, rename it, and add one line to the
+   PALETTES list in js/config.js.
+
+   What the names mean:
+     --page-bg     page background          --board-bg  board frame and score boxes
+     --cell-bg     empty cells              --text-dark main text
+     --accent      buttons, "+4" text       --on-low    number color on tiles 2 and 4
+     --on-board    (optional) text color on the board frame and score boxes.
+                   Only needed when --board-bg is dark. Defaults to --text-dark.
+     --on-high     number color on tiles 8 and up
+     --v2 ... --v1024   tile colors for each number
+     --v2048       the winning tile (it also glows)
+     --vbig        tiles above 2048         --vbig-text number color on those
+     --t2 ... --t2048  (optional) number color of ONE tile, overriding --on-low / --on-high.
+                   Example: --t128: #000000;  makes only the 128 number black.
+*/
+
+/* ---- AUTUMN: warm paper, rust, mustard, olive ---- */
+[data-palette="autumn"] {
+  --page-bg: #f6efe6;  --board-bg: #cdb9a3;  --cell-bg: #dccbb8;
+  --text-dark: #4a3426;  --accent: #b5532a;
+  --on-low: #6b4a2b;     --on-high: #fffaf2;
+  --v2: #f3e3c3;   --v4: #ecd2a4;   --v8: #d98a40;   --v16: #cf7436;
+  --v32: #c05a2c;  --v64: #a8432a;  --v128: #c99a33; --v256: #b0842c;
+  --v512: #8d8638; --v1024: #5f7a4a; --v2048: #d9a021;
+  --vbig: #3b2a20; --vbig-text: #e8c070;
+}
+
+/* ---- COOL: soft blue-grey, slate, teal ---- */
+[data-palette="cool"] {
+  --page-bg: #eef2f5;  --board-bg: #b9c7d1;  --cell-bg: #d3dde4;
+  --text-dark: #2b3a47;  --accent: #2f7f95;
+  --on-low: #3b556b;     --on-high: #ffffff;
+  --v2: #e6eff5;   --v4: #d2e3ee;   --v8: #6fa3c4;   --v16: #5a8fb5;
+  --v32: #4a7ca3;  --v64: #3d6a91;  --v128: #3f8f9b; --v256: #2f7a8a;
+  --v512: #27667a; --v1024: #2a4f73; --v2048: #1f9bb0;
+  --vbig: #1d2c3a; --vbig-text: #8fd3e0;
+}
+
+/* ---- NEUTRAL: warm greys, one red accent at 2048 ---- */
+[data-palette="neutral"] {
+  --page-bg: #f1f1ef;  --board-bg: #c9c8c4;  --cell-bg: #dcdbd7;
+  --text-dark: #3a3a38;  --accent: #5b5b58;
+  --on-low: #55534e;     --on-high: #ffffff;
+  --v2: #efeeea;   --v4: #e2e0da;   --v8: #8d8a81;   --v16: #7b786f;
+  --v32: #6a675f;  --v64: #5a5750;  --v128: #4c4a45; --v256: #403e3a;
+  --v512: #353330; --v1024: #2b2a28; --v2048: #b84a3a;
+  --vbig: #1b1a19; --vbig-text: #d9b25a;
+}
+
+/* ---- CANDY: saturated gummy colors on a clean white board, so the tiles pop.
+   The soft shine on the tiles comes from one CSS rule further down ("CANDY only"). */
+[data-palette="candy"] {
+  --page-bg: #fff6fa;  --board-bg: #ffffff;  --cell-bg: #f6e9f3;
+  --text-dark: #5a3a4a;  --accent: #e0587a;
+  --on-low: #5a3a4a;     --on-high: #5a3a4a;
+  --v2: #ffe45c;   --v4: #a6e35a;   --v8: #ff5a6e;   --v16: #c9a8e8;
+  --v32: #5bb8ff;  --v64: #7ee0a2;  --v128: #ff9a5c; --v256: #f2789a;
+  --v512: #9b86dd; --v1024: #5fcfc4; --v2048: #ffc83d;
+  --vbig: #5a3a4a; --vbig-text: #ffe45c;
+}
+
+/* ---- SUMMER: sunny cream, aqua sea, coral, mango, palm green ---- */
+[data-palette="summer"] {
+  --page-bg: #fff8e7;  --board-bg: #a9ddd8;  --cell-bg: #c8ebe6;
+  --text-dark: #17475a;  --accent: #f2674f;
+  --on-low: #17475a;     --on-high: #ffffff;
+  --v2: #fff6d6;   --v4: #ffe9a3;   --v8: #f59a2a;   --v16: #f2793a;
+  --v32: #ee5a4f;  --v64: #e03e6c;  --v128: #1fa3a8; --v256: #1a8fb8;
+  --v512: #2a74c7; --v1024: #3aa86b; --v2048: #f5a300;
+  --vbig: #0f3b4d; --vbig-text: #ffd25a;
+}
+
+/* ---- CHRISTMAS: snow cream, pine-green board, red, gold, holly ----
+   The board is dark here, so --on-board makes the score text light. */
+[data-palette="christmas"] {
+  --page-bg: #f5efe6;  --board-bg: #2f4f3b;  --cell-bg: #3d6149;
+  --text-dark: #2f3b2f;  --accent: #b3262d;  --on-board: #f5efe6;
+  --on-low: #8a2b2b;     --on-high: #ffffff;
+  --v2: #fbf6ea;   --v4: #f3e4c8;   --v8: #e07b6a;   --v16: #d1473f;
+  --v32: #b3262d;  --v64: #8c1f2a;  --v128: #d9a93a; --v256: #c4932c;
+  --v512: #86b886; --v1024: #5fa872; --v2048: #e0a526;
+  --vbig: #1f2a22; --vbig-text: #f2d27a;
+}
+
+/* ---- CYBERPUNK: your colors. Deep navy night, teal, purple, magenta, pink, cyan glow ----
+   A dark palette: --text-dark is LIGHT here (it just means "main text color").
+   Number colors are set tile by tile with the optional --t2, --t4 ... overrides.
+   Three tints (#870854, #f7d3e1, #bdf7f3) are blends I made between your colors,
+   because the board needs 11 distinct tiles. */
+[data-palette="cyberpunk"] {
+  --page-bg: #0b001b;  --board-bg: #08173d;  --cell-bg: #03274c;
+  --text-dark: #eca6c0;  --accent: #c1115a;
+  --on-low: #e6fffd;     --on-high: #0b001b;
+  --v2: #084f64;   --v4: #0f9595;   --v8: #4d004f;   --v16: #870854;
+  --v32: #c1115a;  --v64: #e13a6a;  --v128: #e46a87; --v256: #eca6c0;
+  --v512: #f7d3e1; --v1024: #bdf7f3; --v2048: #53ebe4;
+  --vbig: #0b001b; --vbig-text: #53ebe4;
+  --t2: #53ebe4;   --t8: #eca6c0;   --t16: #eca6c0;  --t32: #ffffff;
+  --t128: #0b001b; --t512: #4d004f; --t1024: #084f64;
+}
+
+/* ---- STRANGER THINGS: 80s paper, deep teal board, rust, reds, mustard ----
+   Eight colors come straight from your image: tan #d3b58d, burnt orange #c55200,
+   coral #df4c55, red #c3332d, deep red #7d0202, teal #019e87, brown #48180d,
+   mustard #eba92e (the 2048 tile), plus the dark teal #142d2d (the board) and
+   the paper cream #f3ecde (the page and tile 2).
+   Derived: #0a655a (256, a darker teal), #7ec8b8 (1024, a pale teal), #1d3d3d (cells).
+   Dark board, so --on-board makes the score text light. */
+[data-palette="stranger-things"] {
+  --page-bg: #f3ecde;  --board-bg: #142d2d;  --cell-bg: #1d3d3d;
+  --text-dark: #48180d;  --accent: #c3332d;  --on-board: #f3ecde;
+  --on-low: #48180d;     --on-high: #ffffff;
+  --v2: #f3ecde;   --v4: #d3b58d;   --v8: #c55200;   --v16: #df4c55;
+  --v32: #c3332d;  --v64: #7d0202;  --v128: #019e87; --v256: #0a655a;
+  --v512: #48180d; --v1024: #7ec8b8; --v2048: #eba92e;
+  --vbig: #0a0804; --vbig-text: #eba92e;
+  --t512: #d3b58d; --t1024: #142d2d; --t2048: #48180d;
+}
+
+/* ---- OFF-PINK: dusty rose and plum. Also the one to edit freely: change any color below. ---- */
+[data-palette="off-pink"] {
+  --page-bg: #f3ecee;  --board-bg: #c9b8c0;  --cell-bg: #dccdd4;
+  --text-dark: #43323c;  --accent: #9a4d6b;
+  --on-low: #6b4a5b;     --on-high: #ffffff;
+  --v2: #f5e6ec;   --v4: #ecd0dc;   --v8: #c98aa6;   --v16: #b8708f;
+  --v32: #a05879;  --v64: #874a68;  --v128: #7a5c8f; --v256: #65558a;
+  --v512: #4f5f8c; --v1024: #3f6f86; --v2048: #c9962e;
+  --vbig: #2d2230; --vbig-text: #e6c27a;
+}
+
