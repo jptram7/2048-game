@@ -9,10 +9,10 @@
    Think of it as a pantry: stock it once while you are online, cook from it offline.
 
    IMPORTANT: when you change ANY game file (html, css, js), change the version number below
-   (v2 -> v3). That tells the phone "the pantry is out of date, restock it".
+   (v3 -> v4). That tells the phone "the pantry is out of date, restock it".
 */
 
-const CACHE_NAME = "game2048-v2";
+const CACHE_NAME = "game2048-v3";
 
 // The files to save. "./" is the page itself (index.html).
 const FILES_TO_SAVE = [

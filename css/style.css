@@ -21,6 +21,9 @@
    include padding, which keeps sizes predictable. */
 * { box-sizing: border-box; }
 
+/* No rubber-band bounce when you swipe at the edge of the page (iPhone). */
+html, body { overscroll-behavior: none; }
+
 body {
   margin: 0;
   min-height: 100vh;               /* at least the full screen height */
@@ -104,7 +107,10 @@ button:hover  { filter: brightness(1.1); }
 button:active { transform: scale(0.95); }
 
 /* ---- Win / game-over message laid over the board (Chapter 9) ---- */
-.board-wrap { position: relative; }   /* lets the overlay sit on top of the board */
+.board-wrap {
+  position: relative;   /* lets the overlay sit on top of the board */
+  touch-action: none;   /* a finger on the board (or its overlay) never scrolls the page */
+}
 
 .overlay {
   position: absolute;

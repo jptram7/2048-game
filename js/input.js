@@ -46,6 +46,14 @@ function setupInput() {
     touchStartY = touch.clientY;
   }, { passive: true });
 
+  // iPhone Safari can still drag the whole page while a finger moves on the board.
+  // preventDefault() on touchmove stops that. It needs passive:false, otherwise the
+  // browser ignores preventDefault. Applied to the wrapper so the tiles and the
+  // win/game-over overlay are covered too.
+  document.querySelector(".board-wrap").addEventListener("touchmove", function (event) {
+    event.preventDefault();
+  }, { passive: false });
+
   boardElement.addEventListener("touchend", function (event) {
     const touch = event.changedTouches[0];
     const direction = directionFromSwipe(touch.clientX - touchStartX,
